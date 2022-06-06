@@ -1,3 +1,5 @@
+
+
 #include "DHT.h"
 #include <LiquidCrystal_I2C.h>
 LiquidCrystal_I2C lcd(0x27, 16, 2);
@@ -13,15 +15,15 @@ void setup() {
   dht.begin();
   lcd.init();
   lcd.backlight();//lcd başladı
-  pinMode(roleLamba,OUTPUT);
-  pinMode(roleFan,OUTPUT);
+  pinMode(roleLamba, OUTPUT);
+  pinMode(roleFan, OUTPUT);
 
 }
 
 void loop() {
 
   //*********dht basla
-   float h = dht.readHumidity();
+  float h = dht.readHumidity();
   // Read temperature as Celsius (the default)
   float t = dht.readTemperature();
   // Read temperature as Fahrenheit (isFahrenheit = true)
@@ -49,7 +51,7 @@ void loop() {
   Serial.print(F("°C "));
   Serial.print(hif);
   Serial.println(F("°F"));
- delay(2000);
+  delay(2000);
   //*************dht bitis
 
   //**************ekran basla
@@ -60,38 +62,44 @@ void loop() {
   lcd.print(t);
   lcd.setCursor(0, 1);  //yazının yazılacağı satır ve sütün sayısı
   lcd.print("Fan:");
-  lcd.print("  ");
+  if (roleFan)
+    lcd.print("+");
+  else
+    lcd.print("-");
   lcd.print("Lamba:");
- 
+  if (roleLamba)
+    lcd.print("+");
+  else
+    lcd.print("-");
   lcd.setCursor(0, 2);
   //*******************ekran bitis
 
 
   //*********lamba aç
-if (t<25)
-  digitalWrite(roleLamba,HIGH);
+  if (t < 36)
+    digitalWrite(roleLamba, HIGH);
   else
-  digitalWrite(roleLamba,LOW);
+    digitalWrite(roleLamba, LOW);
 
 
-//*********lamab kapat
-if (t>27)
-  digitalWrite(roleLamba,LOW);
+  //*********lamab kapat
+  if (t > 38)
+    digitalWrite(roleLamba, LOW);
   else
-  digitalWrite(roleLamba,HIGH);
+    digitalWrite(roleLamba, HIGH);
 
 
   //*********fan aç
-if (h>70)
-  digitalWrite(roleFan,HIGH);
+  if (h > 70)
+    digitalWrite(roleFan, HIGH);
   else
-  digitalWrite(roleFan,LOW);
+    digitalWrite(roleFan, LOW);
 
 
-//*********fan kapat
-if (h<60)
-  digitalWrite(roleFan,LOW);
+  //*********fan kapat
+  if (h < 60)
+    digitalWrite(roleFan, LOW);
   else
-  digitalWrite(roleFan,HIGH);
+    digitalWrite(roleFan, HIGH);
 
 }
